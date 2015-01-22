@@ -22,30 +22,28 @@ def search():
 	search_url = urllib.urlopen(url)
 	results  = json.loads(search_url.read())
 	# print results
-	for res in results['items']:
-		if 'authors' in res['volumeInfo']:
-			# data = [dict() for x in range(10)]
-			# for dictlist in data
-			data= {
-					'book_title':res['volumeInfo']['title'].encode('utf-8') ,
-					'author':res['volumeInfo']['authors'][0]
-				}
-		print data
-	# if "items" in results.keys(): 
-	# 	for res in results['items']:
-	# 		if 'authors' in res['volumeInfo']:
-	# 			# print '\t' + '\t' + '\t' + res['volumeInfo']['authors'][0]
-	# 			data= {
-	# 					'book_title':res['volumeInfo']['title'].encode('utf-8') ,
-	# 					'author':res['volumeInfo']['authors'][0]
-	# 				}
-	# 		else:
-	# 			data= {
-	# 					'book_title':res['volumeInfo']['title'].encode('utf-8'),
-	# 				}
-	# 	print data
-	# 	return data
+	# print results
+	google_book_search = []
+	# for res in results['items']:
+	# 	print res['volumeInfo']
 
+	query_book_data = [ {
+							'book_title':res['volumeInfo']['title'].encode('utf-8'),
+							# 'subtitle':res['volumeInfo']['subtitle'].encode('utf-8'),
+							'author':res['volumeInfo']['authors'][0],
+							'ratings':res['volumeInfo']['averageRating'],
+							'pages':res['volumeInfo']['pageCount'],
+							'thumbnail':res['volumeInfo']['imageLinks']['thumbnail'],
+							'category':res['volumeInfo']['categories'][0]
+
+						}
+						for res in results['items'] if 'authors' in res['volumeInfo']]
+
+	test = {
+		"data": query_book_data
+	}
+	print test
+	
 # def twitter_trend_hashtag():
 
 # 	CONSUMER_KEY = 'bhipusATdYgFpi9W2nCaHK57c'
@@ -118,20 +116,80 @@ def google_book_search(query):
 	search_url = urllib.urlopen(url)
 	results  = json.loads(search_url.read())
 	# print results
+	google_book_search = []
 	if "items" in results.keys(): 
 		for res in results['items']:
 			if 'authors' in res['volumeInfo']:
-				# print '\t' + '\t' + '\t' + res['volumeInfo']['authors'][0]
-				data= {
-						'book_title':res['volumeInfo']['title'].encode('utf-8') ,
-						'author':res['volumeInfo']['authors'][0]
-					}
+				if 'averageRating' in res['volumeInfo']:
+					if 'pageCount' in res['volumeInfo']:
+						if 'categories' in res['volumeInfo']:
+							if 'imageLinks' in res['volumeInfo']:
+								data= {
+										'book_title':res['volumeInfo']['title'].encode('utf-8'),
+										# 'subtitle':res['volumeInfo']['subtitle'].encode('utf-8'),
+										'author':res['volumeInfo']['authors'][0],
+										'ratings':res['volumeInfo']['averageRating'],
+										'pages':res['volumeInfo']['pageCount'],
+										'thumbnail':res['volumeInfo']['imageLinks']['thumbnail'],
+										'category':res['volumeInfo']['categories'][0]
+
+									}
+							else:
+								data= {
+										'book_title':res['volumeInfo']['title'].encode('utf-8'),
+										# 'subtitle':res['volumeInfo']['subtitle'].encode('utf-8'),
+										'author':res['volumeInfo']['authors'][0],
+										'ratings':res['volumeInfo']['averageRating'],
+										'pages':res['volumeInfo']['pageCount'],
+										'category':res['volumeInfo']['categories'][0]
+
+									}
+						else:
+							data= {
+									'book_title':res['volumeInfo']['title'].encode('utf-8'),
+									# 'subtitle':res['volumeInfo']['subtitle'].encode('utf-8'),
+									'author':res['volumeInfo']['authors'][0],
+									'ratings':res['volumeInfo']['averageRating'],
+									'pages':res['volumeInfo']['pageCount'],
+									'thumbnail':res['volumeInfo']['imageLinks']['thumbnail'],
+								}
+					else:
+						data= {
+								'book_title':res['volumeInfo']['title'].encode('utf-8'),
+								# 'subtitle':res['volumeInfo']['subtitle'].encode('utf-8'),
+								'author':res['volumeInfo']['authors'][0],
+								'ratings':res['volumeInfo']['averageRating'],
+								'thumbnail':res['volumeInfo']['imageLinks']['thumbnail'],
+								'category':res['volumeInfo']['categories'][0]
+							}
+				else:
+					data= {
+							'book_title':res['volumeInfo']['title'].encode('utf-8'),
+							# 'subtitle':res['volumeInfo']['subtitle'].encode('utf-8'),
+							'author':res['volumeInfo']['authors'][0],
+							'pages':res['volumeInfo']['pageCount'],
+							'thumbnail':res['volumeInfo']['imageLinks']['thumbnail'],
+							# 'category':res['volumeInfo']['categories'][0]
+						}
 			else:
 				data= {
 						'book_title':res['volumeInfo']['title'].encode('utf-8'),
+						# 'subtitle':res['volumeInfo']['subtitle'].encode('utf-8'),
+						'ratings':res['volumeInfo']['averageRating'],
+						'pages':res['volumeInfo']['pageCount'],
+						'thumbnail':res['volumeInfo']['imageLinks']['thumbnail'],
+						'category':res['volumeInfo']['categories'][0]
+
 					}
-		print data
-		return data
+			google_book_search.append(data)
+	
+	test = {
+		"data": google_book_search
+	}
+	print test
+	return {
+		"data": google_book_search
+	} 
 
 if __name__ == "__main__":
 	# twitter_trend_hashtag()
